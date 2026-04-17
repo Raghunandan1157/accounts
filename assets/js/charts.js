@@ -30,10 +30,10 @@
     t.setAttribute('role', 'tooltip');
     t.style.cssText = [
       'position:absolute', 'pointer-events:none', 'opacity:0', 'z-index:1000',
-      'background:' + SURFACE, 'border:1px solid ' + BORDER, 'border-radius:8px',
-      'box-shadow:0 6px 24px rgba(10,10,10,0.06), 0 1px 3px rgba(10,10,10,0.05)',
-      'padding:10px 12px', 'font-family:Geist, sans-serif', 'font-size:13px',
-      'color:' + INK, 'min-width:180px', 'max-width:300px',
+      'background:#FFFFFF', 'border:1px solid #E7E7E4', 'border-radius:8px',
+      'box-shadow:0 4px 12px rgba(0,0,0,0.04)',
+      'padding:12px 14px', 'font-family:Geist, sans-serif', 'font-size:13px',
+      'color:#111', 'min-width:180px', 'max-width:300px',
       'transition:opacity 120ms ease, transform 120ms ease',
       'transform:translateY(-2px)'
     ].join(';');
@@ -47,15 +47,15 @@
   window.addEventListener('scroll', hideTip, { passive: true, capture: true });
 
   const EYEBROW_CSS =
-    "font-family:'Geist Mono',ui-monospace,monospace;font-size:11px;color:" + MUTED +
+    "font-family:'Geist Mono',ui-monospace,monospace;font-size:11px;color:#6A6A6A" +
     ";letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px";
   const DOT_CSS =
-    "width:8px;height:8px;background:" + ACCENT +
+    "width:6px;height:6px;background:" + ACCENT +
     ";border-radius:50%;display:inline-block;flex-shrink:0;margin-right:8px;transform:translateY(-1px)";
   const VAL_CSS =
-    "font-family:'Geist Mono',ui-monospace,monospace;font-weight:500;font-variant-numeric:tabular-nums;font-size:13.5px;color:" + INK;
+    "font-family:'Geist Mono',ui-monospace,monospace;font-weight:500;font-variant-numeric:tabular-nums;font-size:13.5px;color:#111";
   const EXTRA_CSS =
-    "font-size:12px;color:" + MUTED + ";margin-top:8px;padding-top:8px;border-top:1px solid #F0F0EE;line-height:1.45";
+    "font-size:12px;color:#6A6A6A;margin-top:8px;padding-top:8px;border-top:1px solid #F0F0EE;line-height:1.45";
 
   function externalRender(context) {
     const { chart, tooltip } = context;
@@ -110,6 +110,7 @@
       external: externalRender,
       mode: 'index',
       intersect: false,
+      position: 'nearest',
       animation: { duration: 120 },
       callbacks: {
         title: (items) => items && items.length ? (titleFn ? titleFn(items) : '') : '',
