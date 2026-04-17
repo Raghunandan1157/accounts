@@ -2,7 +2,7 @@
 
 A single-month treasury ledger for an NBFC. Static site. No framework.
 
-March 2026 — ₹ 88.95 Cr of outflow across 1,049 transactions, 37 bank accounts, 31 active days.
+March 2026 — ₹ 69.49 Cr of outflow across 523 transactions, 38 bank accounts, 31 active days (sourced from `source.xls`).
 
 ## Stack
 
@@ -48,7 +48,7 @@ Light premium SaaS: Linear × Vercel × Stripe × Notion.
 - 1 px `#E7E7E4` borders, 10 px radius. No gradients, glows, or glassmorphism; only a subtle popover shadow on overlays.
 - Tables: 13 px rows, 10.5 px uppercase mono column headers, sticky header, right-aligned numerics.
 - Calendar: 7×5 grid, day number in Geist 500, indigo bottom-bar scaled to outflow.
-- Hero number ₹88.95 Cr in 72 px Geist 500, letter-spacing −.035em, tabular-nums.
+- Hero number (e.g. ₹69.49 Cr) in 72 px Geist 500, letter-spacing −.035em, tabular-nums.
 - Motion: 180 ms `cubic-bezier(0.16,1,0.3,1)`, 8 px fade-up on page load. Micro-interactions only; ⌘K opens without animation.
 
 ## Sections
