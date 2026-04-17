@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>March 2026 · Treasury Dashboard</title>
+  <meta name="description" content="CEO financial dashboard for March 2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar" role="banner">
+    <div class="topbar__inner">
+      <div class="brand" aria-label="Treasury">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <div class="brand__text">
+          <span class="brand__eyebrow">Treasury</span>
+          <span class="brand__title" id="brand-period">March 2026</span>
+        </div>
+      </div>
+
+      <nav class="tabs" role="tablist" aria-label="Dashboard sections">
+        <button class="tab" role="tab" data-route="overview" aria-selected="true">Overview <kbd>g o</kbd></button>
+        <button class="tab" role="tab" data-route="daily" aria-selected="false">Daily <kbd>g d</kbd></button>
+        <button class="tab" role="tab" data-route="categories" aria-selected="false">Categories <kbd>g c</kbd></button>
+        <button class="tab" role="tab" data-route="banks" aria-selected="false">Banks <kbd>g b</kbd></button>
+        <button class="tab" role="tab" data-route="transactions" aria-selected="false">Transactions <kbd>g t</kbd></button>
+      </nav>
+
+      <div class="topbar__actions">
+        <button class="search-trigger" id="openSearch" aria-label="Open global search">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>Search transactions</span>
+          <kbd>⌘K</kbd>
+        </button>
+        <button class="icon-btn" id="openHelp" aria-label="Keyboard shortcuts">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main">
+    <!-- OVERVIEW -->
+    <section class="view" data-view="overview" aria-labelledby="overview-h">
+      <header class="view__header">
+        <h1 id="overview-h" class="view__title">Overview</h1>
+        <p class="view__sub">A single glance at the month's money movement.</p>
+      </header>
+
+      <div class="kpi-grid" id="kpiGrid" aria-live="polite">
+        <!-- filled by JS -->
+      </div>
+
+      <div class="dq-banner" id="dqBanner" hidden>
+        <div class="dq-banner__dot" aria-hidden="true"></div>
+        <div class="dq-banner__text">
+          <strong id="dqCount">—</strong> transactions are <em>Uncategorized</em>
+          (<span id="dqPct">—</span> of count, <span id="dqAmt">—</span> value).
+          Consider assigning categories for cleaner attribution.
+        </div>
+        <button class="dq-banner__cta" data-goto="uncategorized">Review</button>
+      </div>
+
+      <section class="insights" id="insights" hidden aria-label="Insights"></section>
+
+      <div class="chart-row">
+        <article class="card chart-card">
+          <header class="card__header">
+            <h2 class="card__title">Category mix</h2>
+            <span class="card__meta" id="catCount">—</span>
+          </header>
+          <div class="chart-wrap"><canvas id="chartCategory" role="img" aria-label="Category mix donut chart"></canvas></div>
+        </article>
+        <article class="card chart-card chart-card--wide">
+          <header class="card__header">
+            <h2 class="card__title">Daily trend</h2>
+            <span class="card__meta">March 1 – 31</span>
+          </header>
+          <div class="chart-wrap"><canvas id="chartDaily" role="img" aria-label="Daily payments trend"></canvas></div>
+        </article>
+        <article class="card chart-card">
+          <header class="card__header">
+            <h2 class="card__title">Top banks</h2>
+            <span class="card__meta" id="bankCount">—</span>
+          </header>
+          <div class="chart-wrap"><canvas id="chartBanks" role="img" aria-label="Top banks bar chart"></canvas></div>
+        </article>
+      </div>
+
+      <article class="card">
+        <header class="card__header">
+          <h2 class="card__title">Top 10 transactions</h2>
+          <span class="card__meta">By amount</span>
+        </header>
+        <div class="table-wrap">
+          <table class="tbl" id="topTxnTable">
+            <thead><tr>
+              <th>Date</th><th>Particulars</th><th>Bank</th><th>Category</th><th class="num">Amount</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- DAILY -->
+    <section class="view" data-view="daily" hidden aria-labelledby="daily-h">
+      <header class="view__header">
+        <h1 id="daily-h" class="view__title">Daily</h1>
+        <p class="view__sub">Pick a day to drill into every transaction.</p>
+      </header>
+      <div class="calendar-strip" id="calendarStrip" role="tablist" aria-label="Days of March">
+        <!-- day pills -->
+      </div>
+      <div class="day-summary" id="daySummary"></div>
+      <article class="card">
+        <header class="card__header card__header--filters">
+          <h2 class="card__title" id="dayTitle">Transactions</h2>
+          <div class="filters">
+            <input type="search" class="input" id="dayFilter" placeholder="Filter this day…" aria-label="Filter day transactions" />
+          </div>
+        </header>
+        <div class="table-wrap">
+          <table class="tbl" id="dayTable">
+            <thead><tr>
+              <th data-sort="date">Date</th>
+              <th data-sort="particulars">Particulars</th>
+              <th data-sort="bank">Bank</th>
+              <th data-sort="category">Category</th>
+              <th class="num" data-sort="amount">Amount</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="view" data-view="categories" hidden aria-labelledby="cat-h">
+      <header class="view__header">
+        <h1 id="cat-h" class="view__title">Categories</h1>
+        <p class="view__sub">Where the money went, by bucket.</p>
+      </header>
+      <div class="split">
+        <aside class="list-panel" id="categoryList" role="listbox" aria-label="Categories"></aside>
+        <section class="detail-panel">
+          <article class="card">
+            <header class="card__header">
+              <h2 class="card__title" id="categoryDetailTitle">Select a category</h2>
+              <span class="card__meta" id="categoryDetailMeta"></span>
+            </header>
+            <div class="chart-wrap chart-wrap--short"><canvas id="chartCategoryTrend" role="img" aria-label="Category daywise trend"></canvas></div>
+          </article>
+          <article class="card">
+            <header class="card__header card__header--filters">
+              <h2 class="card__title">Transactions</h2>
+              <input type="search" class="input" id="categoryFilter" placeholder="Filter…" aria-label="Filter category transactions" />
+            </header>
+            <div class="table-wrap">
+              <table class="tbl" id="categoryTable">
+                <thead><tr>
+                  <th data-sort="date">Date</th>
+                  <th data-sort="particulars">Particulars</th>
+                  <th data-sort="bank">Bank</th>
+                  <th class="num" data-sort="amount">Amount</th>
+                </tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </div>
+    </section>
+
+    <!-- BANKS -->
+    <section class="view" data-view="banks" hidden aria-labelledby="bank-h">
+      <header class="view__header">
+        <h1 id="bank-h" class="view__title">Banks</h1>
+        <p class="view__sub">Accounts ranked by outflow.</p>
+      </header>
+      <div class="split">
+        <aside class="list-panel" id="bankList" role="listbox" aria-label="Banks"></aside>
+        <section class="detail-panel">
+          <article class="card">
+            <header class="card__header">
+              <h2 class="card__title" id="bankDetailTitle">Select a bank</h2>
+              <span class="card__meta" id="bankDetailMeta"></span>
+            </header>
+            <div class="chart-wrap chart-wrap--short"><canvas id="chartBankTrend" role="img" aria-label="Bank daywise trend"></canvas></div>
+          </article>
+          <article class="card">
+            <header class="card__header card__header--filters">
+              <h2 class="card__title">Transactions</h2>
+              <input type="search" class="input" id="bankFilter" placeholder="Filter…" aria-label="Filter bank transactions" />
+            </header>
+            <div class="table-wrap">
+              <table class="tbl" id="bankTable">
+                <thead><tr>
+                  <th data-sort="date">Date</th>
+                  <th data-sort="particulars">Particulars</th>
+                  <th data-sort="category">Category</th>
+                  <th class="num" data-sort="amount">Amount</th>
+                </tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </div>
+    </section>
+
+    <!-- TRANSACTIONS -->
+    <section class="view" data-view="transactions" hidden aria-labelledby="txn-h">
+      <header class="view__header">
+        <h1 id="txn-h" class="view__title">All Transactions</h1>
+        <p class="view__sub" id="txnCountLabel">—</p>
+      </header>
+      <article class="card">
+        <header class="card__header card__header--filters">
+          <div class="filters filters--wrap">
+            <input type="search" class="input input--grow" id="txnSearch" placeholder="Search particulars, bank, category…" aria-label="Search transactions" />
+            <select class="input" id="txnBank" aria-label="Filter by bank"><option value="">All banks</option></select>
+            <select class="input" id="txnCategory" aria-label="Filter by category"><option value="">All categories</option></select>
+            <input type="date" class="input" id="txnFrom" aria-label="From date" min="2026-03-01" max="2026-03-31" />
+            <input type="date" class="input" id="txnTo" aria-label="To date" min="2026-03-01" max="2026-03-31" />
+            <input type="number" class="input input--short" id="txnMin" placeholder="Min ₹" aria-label="Minimum amount" />
+            <input type="number" class="input input--short" id="txnMax" placeholder="Max ₹" aria-label="Maximum amount" />
+            <button class="btn btn--ghost" id="txnReset">Reset</button>
+          </div>
+        </header>
+        <div class="table-wrap">
+          <table class="tbl" id="txnTable">
+            <thead><tr>
+              <th data-sort="date">Date</th>
+              <th data-sort="particulars">Particulars</th>
+              <th data-sort="bank">Bank</th>
+              <th data-sort="category">Category</th>
+              <th class="num" data-sort="amount">Amount</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <footer class="pager">
+          <span class="pager__info" id="pagerInfo">—</span>
+          <div class="pager__ctrls">
+            <button class="btn btn--ghost" id="pagerPrev">Prev</button>
+            <button class="btn btn--ghost" id="pagerNext">Next</button>
+          </div>
+        </footer>
+      </article>
+    </section>
+  </main>
+
+  <!-- Command Palette -->
+  <div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Global search" hidden>
+    <div class="palette__scrim" data-close></div>
+    <div class="palette__panel" role="document">
+      <div class="palette__input-wrap">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" class="palette__input" id="paletteInput" placeholder="Search anything…" aria-label="Search" />
+        <kbd class="palette__hint">ESC</kbd>
+      </div>
+      <ul class="palette__results" id="paletteResults" role="listbox"></ul>
+      <div class="palette__foot">
+        <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+        <span><kbd>↵</kbd> open</span>
+        <span><kbd>esc</kbd> close</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help overlay -->
+  <div class="palette" id="help" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" hidden>
+    <div class="palette__scrim" data-close></div>
+    <div class="palette__panel palette__panel--help">
+      <h2 class="help__title">Keyboard shortcuts</h2>
+      <dl class="help__list">
+        <div><dt><kbd>⌘</kbd><kbd>K</kbd></dt><dd>Open global search</dd></div>
+        <div><dt><kbd>g</kbd><kbd>o</kbd></dt><dd>Overview</dd></div>
+        <div><dt><kbd>g</kbd><kbd>d</kbd></dt><dd>Daily</dd></div>
+        <div><dt><kbd>g</kbd><kbd>c</kbd></dt><dd>Categories</dd></div>
+        <div><dt><kbd>g</kbd><kbd>b</kbd></dt><dd>Banks</dd></div>
+        <div><dt><kbd>g</kbd><kbd>t</kbd></dt><dd>Transactions</dd></div>
+        <div><dt><kbd>?</kbd></dt><dd>This help</dd></div>
+        <div><dt><kbd>esc</kbd></dt><dd>Close overlays</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="assets/js/data-loader.js" defer></script>
+  <script src="assets/js/charts.js" defer></script>
+  <script src="assets/js/app.js" defer></script>
+</body>
+</html>

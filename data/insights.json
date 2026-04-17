@@ -1,0 +1,518 @@
+{
+  "month": "March 2026",
+  "generatedFor": "CEO Dashboard",
+  "top5LargestTransactions": [
+    {
+      "id": 1047,
+      "date": "2026-03-31",
+      "day": 31,
+      "bank": "ESAF Small Finance Bank",
+      "particulars": "ESAF Small Finance Bank",
+      "amount": 87000000.0,
+      "category": "Fund Transfer"
+    },
+    {
+      "id": 1015,
+      "date": "2026-03-31",
+      "day": 31,
+      "bank": "HDFC Bank HO",
+      "particulars": "MULTIPLE - SALARY - 6428106861.TXT",
+      "amount": 22152600.0,
+      "category": "HR Dept"
+    },
+    {
+      "id": 18,
+      "date": "2026-03-02",
+      "day": 2,
+      "bank": "HDFC Bank HO",
+      "particulars": "MULTIPLE - SALARY - 64281040.TXT",
+      "amount": 21451870.0,
+      "category": "HR Dept"
+    },
+    {
+      "id": 38,
+      "date": "2026-03-02",
+      "day": 2,
+      "bank": "ESAF Small Finance Bank",
+      "particulars": "ESAF Small Finance Bank",
+      "amount": 19500000.0,
+      "category": "Uncategorized"
+    },
+    {
+      "id": 527,
+      "date": "2026-03-13",
+      "day": 13,
+      "bank": "ESAF Small Finance Bank",
+      "particulars": "ESAF Small Finance Bank",
+      "amount": 16700000.0,
+      "category": "Fund Transfer"
+    }
+  ],
+  "anomalies": [
+    {
+      "id": 1047,
+      "date": "2026-03-31",
+      "day": 31,
+      "bank": "ESAF Small Finance Bank",
+      "particulars": "ESAF Small Finance Bank",
+      "amount": 87000000.0,
+      "category": "Fund Transfer",
+      "categoryMean": 849409.88,
+      "categoryStd": 4941435.97,
+      "zScore": 17.43,
+      "threshold": 15673717.78
+    },
+    {
+      "id": 38,
+      "date": "2026-03-02",
+      "day": 2,
+      "bank": "ESAF Small Finance Bank",
+      "particulars": "ESAF Small Finance Bank",
+      "amount": 19500000.0,
+      "category": "Uncategorized",
+      "categoryMean": 301188.69,
+      "categoryStd": 1353265.12,
+      "zScore": 14.19,
+      "threshold": 4360984.05
+    },
+    {
+      "id": 659,
+      "date": "2026-03-18",
+      "day": 18,
+      "bank": "HDFC Bank HO",
+      "particulars": "HDFC Bank HO",
+      "amount": 5000000.0,
+      "category": "Bank charges",
+      "categoryMean": 59518.49,
+      "categoryStd": 482947.19,
+      "zScore": 10.23,
+      "threshold": 1508360.04
+    },
+    {
+      "id": 188,
+      "date": "2026-03-05",
+      "day": 5,
+      "bank": "HDFC Bank HO",
+      "particulars": "HDFC Bank HO",
+      "amount": 4146718.0,
+      "category": "Bank charges",
+      "categoryMean": 59518.49,
+      "categoryStd": 482947.19,
+      "zScore": 8.46,
+      "threshold": 1508360.04
+    },
+    {
+      "id": 175,
+      "date": "2026-03-05",
+      "day": 5,
+      "bank": "HDFC Bank HO",
+      "particulars": "MULTIPLE - SALARY - 64281049.TXT",
+      "amount": 1872479.0,
+      "category": "Admin Dept",
+      "categoryMean": 49636.9,
+      "categoryStd": 238211.71,
+      "zScore": 7.65,
+      "threshold": 764272.02
+    },
+    {
+      "id": 1049,
+      "date": "2026-03-31",
+      "day": 31,
+      "bank": "HDFC Bank HO",
+      "particulars": "HDFC Bank HO",
+      "amount": 2783013.0,
+      "category": "Bank charges",
+      "categoryMean": 59518.49,
+      "categoryStd": 482947.19,
+      "zScore": 5.64,
+      "threshold": 1508360.04
+    },
+    {
+      "id": 1015,
+      "date": "2026-03-31",
+      "day": 31,
+      "bank": "HDFC Bank HO",
+      "particulars": "MULTIPLE - SALARY - 6428106861.TXT",
+      "amount": 22152600.0,
+      "category": "HR Dept",
+      "categoryMean": 1556865.4,
+      "categoryStd": 4565876.06,
+      "zScore": 4.51,
+      "threshold": 15254493.57
+    },
+    {
+      "id": 619,
+      "date": "2026-03-18",
+      "day": 18,
+      "bank": "UNION BANK HO",
+      "particulars": "GST/26032900308360/01/691068537/GST KA Feb 26",
+      "amount": 12082479.0,
+      "category": "Accounts",
+      "categoryMean": 764513.41,
+      "categoryStd": 2521732.24,
+      "zScore": 4.49,
+      "threshold": 8329710.12
+    },
+    {
+      "id": 18,
+      "date": "2026-03-02",
+      "day": 2,
+      "bank": "HDFC Bank HO",
+      "particulars": "MULTIPLE - SALARY - 64281040.TXT",
+      "amount": 21451870.0,
+      "category": "HR Dept",
+      "categoryMean": 1556865.4,
+      "categoryStd": 4565876.06,
+      "zScore": 4.36,
+      "threshold": 15254493.57
+    },
+    {
+      "id": 527,
+      "date": "2026-03-13",
+      "day": 13,
+      "bank": "ESAF Small Finance Bank",
+      "particulars": "ESAF Small Finance Bank",
+      "amount": 16700000.0,
+      "category": "Fund Transfer",
+      "categoryMean": 849409.88,
+      "categoryStd": 4941435.97,
+      "zScore": 3.21,
+      "threshold": 15673717.78
+    }
+  ],
+  "anomalyCount": 10,
+  "extremeDays": {
+    "busiestByAmount": {
+      "date": "2026-03-31",
+      "day": 31,
+      "total": 215881787.0,
+      "count": 74,
+      "byCategory": {
+        "Bank charges": 2795734.0,
+        "Fund Transfer": 179734598.0,
+        "BC": 4844303.0,
+        "Accounts": 21080.0,
+        "HR Dept": 23726705.0,
+        "IT Dept": 169217.0,
+        "Admin Dept": 314268.0,
+        "Bank Repayment": 3479398.0,
+        "Uncategorized": 796484.0
+      }
+    },
+    "slowestByAmount": {
+      "date": "2026-03-15",
+      "day": 15,
+      "total": 1403.0,
+      "count": 2,
+      "byCategory": {
+        "Bank charges": 1403.0
+      }
+    },
+    "busiestByCount": {
+      "date": "2026-03-31",
+      "day": 31,
+      "total": 215881787.0,
+      "count": 74,
+      "byCategory": {
+        "Bank charges": 2795734.0,
+        "Fund Transfer": 179734598.0,
+        "BC": 4844303.0,
+        "Accounts": 21080.0,
+        "HR Dept": 23726705.0,
+        "IT Dept": 169217.0,
+        "Admin Dept": 314268.0,
+        "Bank Repayment": 3479398.0,
+        "Uncategorized": 796484.0
+      }
+    },
+    "slowestByCount": {
+      "date": "2026-03-15",
+      "day": 15,
+      "total": 1403.0,
+      "count": 2,
+      "byCategory": {
+        "Bank charges": 1403.0
+      }
+    }
+  },
+  "weekSummaries": [
+    {
+      "week": 1,
+      "dateRange": "2026-03-01 to 2026-03-07",
+      "total": 321096255.08,
+      "count": 299,
+      "topCategory": "BC",
+      "topCategoryAmount": 181981789.0
+    },
+    {
+      "week": 2,
+      "dateRange": "2026-03-08 to 2026-03-14",
+      "total": 193816629.0,
+      "count": 232,
+      "topCategory": "BC",
+      "topCategoryAmount": 117880216.0
+    },
+    {
+      "week": 3,
+      "dateRange": "2026-03-15 to 2026-03-21",
+      "total": 100731209.39,
+      "count": 174,
+      "topCategory": "BC",
+      "topCategoryAmount": 58996709.0
+    },
+    {
+      "week": 4,
+      "dateRange": "2026-03-22 to 2026-03-28",
+      "total": 50178035.83,
+      "count": 242,
+      "topCategory": "BC",
+      "topCategoryAmount": 30190859.0
+    },
+    {
+      "week": 5,
+      "dateRange": "2026-03-29 to 2026-03-31",
+      "total": 223713219.06,
+      "count": 102,
+      "topCategory": "Fund Transfer",
+      "topCategoryAmount": 182584615.0
+    }
+  ],
+  "categoryConcentration": {
+    "top3SharePct": 86.88,
+    "top1SharePct": 44.78,
+    "hhi": 3317.99,
+    "interpretation": "Highly concentrated"
+  },
+  "bankConcentration": {
+    "top3SharePct": 76.38,
+    "top1SharePct": 33.62,
+    "hhi": 2258.21,
+    "interpretation": "Moderately concentrated"
+  },
+  "uncategorizedFlag": {
+    "totalCount": 208,
+    "totalAmount": 62647247.52,
+    "sharePct": 7.04,
+    "byBank": [
+      {
+        "bank": "ESAF Small Finance Bank",
+        "amount": 19500000.0,
+        "count": 1
+      },
+      {
+        "bank": "CANARA BANK 0636",
+        "amount": 6700000.0,
+        "count": 14
+      },
+      {
+        "bank": "Axis Bank 1819",
+        "amount": 5871835.57,
+        "count": 21
+      },
+      {
+        "bank": "UNION BANK 0514",
+        "amount": 5060362.98,
+        "count": 16
+      },
+      {
+        "bank": "UNION BANK 0517",
+        "amount": 3940110.95,
+        "count": 21
+      },
+      {
+        "bank": "UNION BANK 0524",
+        "amount": 3071163.61,
+        "count": 18
+      },
+      {
+        "bank": "UNION BANK 0508",
+        "amount": 3028870.45,
+        "count": 19
+      },
+      {
+        "bank": "UNION BANK 0507",
+        "amount": 2789331.39,
+        "count": 19
+      },
+      {
+        "bank": "UNION BANK 0504",
+        "amount": 2740000.0,
+        "count": 10
+      },
+      {
+        "bank": "UNION BANK 0506",
+        "amount": 2413289.34,
+        "count": 15
+      },
+      {
+        "bank": "SBI Bank Haveri",
+        "amount": 2222792.49,
+        "count": 11
+      },
+      {
+        "bank": "CANARA BANK 4360",
+        "amount": 2200000.0,
+        "count": 3
+      },
+      {
+        "bank": "UNION BANK 0509",
+        "amount": 1929374.74,
+        "count": 19
+      },
+      {
+        "bank": "UNION BANK 0523",
+        "amount": 817978.0,
+        "count": 8
+      },
+      {
+        "bank": "SBI Bank 1798",
+        "amount": 219232.0,
+        "count": 5
+      },
+      {
+        "bank": "HDFC Bank 5722",
+        "amount": 55850.0,
+        "count": 3
+      },
+      {
+        "bank": "HDFC Bank 3518",
+        "amount": 42145.0,
+        "count": 2
+      },
+      {
+        "bank": "IDFC Bank HO",
+        "amount": 40060.0,
+        "count": 2
+      },
+      {
+        "bank": "UNION BANK HO",
+        "amount": 4851.0,
+        "count": 1
+      }
+    ],
+    "sampleTxns": [
+      {
+        "id": 38,
+        "date": "2026-03-02",
+        "bank": "ESAF Small Finance Bank",
+        "particulars": "ESAF Small Finance Bank",
+        "amount": 19500000.0
+      },
+      {
+        "id": 119,
+        "date": "2026-03-04",
+        "bank": "CANARA BANK 0636",
+        "particulars": "CANARA BANK 0636",
+        "amount": 1500000.0
+      },
+      {
+        "id": 187,
+        "date": "2026-03-05",
+        "bank": "Axis Bank 1819",
+        "particulars": "Axis Bank 1819",
+        "amount": 1065290.0
+      },
+      {
+        "id": 230,
+        "date": "2026-03-06",
+        "bank": "CANARA BANK 0636",
+        "particulars": "CANARA BANK 0636",
+        "amount": 1050000.0
+      },
+      {
+        "id": 565,
+        "date": "2026-03-16",
+        "bank": "CANARA BANK 4360",
+        "particulars": "CANARA BANK 4360",
+        "amount": 1050000.0
+      },
+      {
+        "id": 416,
+        "date": "2026-03-11",
+        "bank": "CANARA BANK 0636",
+        "particulars": "CANARA BANK 0636",
+        "amount": 920000.0
+      },
+      {
+        "id": 178,
+        "date": "2026-03-05",
+        "bank": "SBI Bank Haveri",
+        "particulars": "SBI Bank Haveri",
+        "amount": 748813.0
+      },
+      {
+        "id": 83,
+        "date": "2026-03-03",
+        "bank": "UNION BANK 0514",
+        "particulars": "UNION BANK 0514",
+        "amount": 739212.0
+      },
+      {
+        "id": 78,
+        "date": "2026-03-03",
+        "bank": "CANARA BANK 4360",
+        "particulars": "CANARA BANK 4360",
+        "amount": 700000.0
+      },
+      {
+        "id": 465,
+        "date": "2026-03-12",
+        "bank": "CANARA BANK 0636",
+        "particulars": "CANARA BANK 0636",
+        "amount": 690000.0
+      }
+    ]
+  },
+  "dayOverDayBiggestJumps": [
+    {
+      "date": "2026-03-16",
+      "day": 16,
+      "prevDate": "2026-03-15",
+      "prevTotal": 1403.0,
+      "currTotal": 37433625.21,
+      "pctChange": 2668012.99,
+      "absChange": 37432222.21,
+      "direction": "up"
+    },
+    {
+      "date": "2026-03-02",
+      "day": 2,
+      "prevDate": "2026-03-01",
+      "prevTotal": 4118.0,
+      "currTotal": 67288622.0,
+      "pctChange": 1633912.19,
+      "absChange": 67284504.0,
+      "direction": "up"
+    },
+    {
+      "date": "2026-03-23",
+      "day": 23,
+      "prevDate": "2026-03-22",
+      "prevTotal": 1564.98,
+      "currTotal": 9103314.18,
+      "pctChange": 581588.85,
+      "absChange": 9101749.2,
+      "direction": "up"
+    },
+    {
+      "date": "2026-03-30",
+      "day": 30,
+      "prevDate": "2026-03-29",
+      "prevTotal": 13258.0,
+      "currTotal": 7818174.06,
+      "pctChange": 58869.48,
+      "absChange": 7804916.06,
+      "direction": "up"
+    },
+    {
+      "date": "2026-03-31",
+      "day": 31,
+      "prevDate": "2026-03-30",
+      "prevTotal": 7818174.06,
+      "currTotal": 215881787.0,
+      "pctChange": 2661.28,
+      "absChange": 208063612.94,
+      "direction": "up"
+    }
+  ]
+}
