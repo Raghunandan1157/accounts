@@ -238,6 +238,20 @@ body {
 .ledger .c-date { color: var(--muted); font-family: var(--ink-mono); font-size: 12.5px; }
 .ledger .num { text-align: right; font-family: var(--ink-mono); font-weight: 500; color: var(--text); }
 .ledger .mono { font-family: var(--ink-mono); color: var(--muted); font-size: 12.5px; }
+.ledger--sheet { table-layout: auto; }
+.ledger--sheet thead th { white-space: nowrap; }
+.ledger--sheet tbody td { white-space: nowrap; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
+.ledger tr.sheet-subhead td {
+  background: #FAFAF8;
+  color: var(--text);
+  font-family: var(--ink-mono);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+}
+.ledger tr.sheet-subhead:hover td { background: #FAFAF8; }
 
 .pill {
   display: inline-flex; align-items: center;

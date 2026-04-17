@@ -29,6 +29,7 @@
         <button class="rail__item" role="tab" data-route="categories" aria-selected="false">Categories</button>
         <button class="rail__item" role="tab" data-route="banks" aria-selected="false">Banks</button>
         <button class="rail__item" role="tab" data-route="transactions" aria-selected="false">Transactions</button>
+        <button class="rail__item" role="tab" data-route="schedules" aria-selected="false">Schedules</button>
       </nav>
 
       <div class="topbar__actions">
@@ -195,6 +196,31 @@
       </div>
     </section>
 
+    <!-- SCHEDULES -->
+    <section class="view" data-view="schedules" hidden aria-labelledby="h-sched">
+      <header class="page-hd">
+        <h1 class="page-hd__title" id="h-sched">Schedules</h1>
+        <p class="page-hd__sub">Source workbook sheets — consolidated, fund plan, final sheet, ESAF, commissions, plan.</p>
+      </header>
+
+      <div class="split">
+        <aside class="sidelist" id="schedList" role="listbox" aria-label="Schedules"></aside>
+        <section class="panel">
+          <div class="panel__hd">
+            <span class="panel__idx" id="schedIdx">—</span>
+            <h2 class="panel__title" id="schedTitle">Select a sheet</h2>
+            <span class="panel__sub" id="schedMeta"></span>
+          </div>
+          <div class="tbl-wrap">
+            <table class="ledger ledger--sheet" id="schedTable">
+              <thead><tr></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+
     <!-- TRANSACTIONS -->
     <section class="view" data-view="transactions" hidden aria-labelledby="h-txn">
       <header class="page-hd">
@@ -263,6 +289,7 @@
         <div><dt><kbd>g</kbd><kbd>c</kbd></dt><dd>Categories</dd></div>
         <div><dt><kbd>g</kbd><kbd>b</kbd></dt><dd>Banks</dd></div>
         <div><dt><kbd>g</kbd><kbd>t</kbd></dt><dd>Transactions</dd></div>
+        <div><dt><kbd>g</kbd><kbd>s</kbd></dt><dd>Schedules</dd></div>
         <div><dt><kbd>?</kbd></dt><dd>This help</dd></div>
         <div><dt><kbd>esc</kbd></dt><dd>Close</dd></div>
       </dl>

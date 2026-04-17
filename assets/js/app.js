@@ -49,6 +49,7 @@
     setupCategoryList();
     setupBankList();
     setupTransactions();
+    setupSchedules();
     setupPalette();
     setupHelp();
     setupKeyboard();
@@ -221,6 +222,7 @@
         <div class="insight__rows">${jumps}</div>
       </div>
 
+      ${(uncat.totalCount || 0) > 0 ? `
       <div class="insight insight--wide">
         <div class="callout">
           <span class="callout__idx">Action item</span>
@@ -230,7 +232,7 @@
           </div>
           <button class="btn" id="uncatBtn">Review →</button>
         </div>
-      </div>`;
+      </div>` : ''}`;
 
     const btn = $('#uncatBtn');
     if (btn) btn.addEventListener('click', () => {
@@ -246,7 +248,7 @@
     window.addEventListener('hashchange', () => go(location.hash.replace('#', '') || 'overview'));
   }
   function go(route) {
-    if (!['overview', 'daily', 'categories', 'banks', 'transactions'].includes(route)) route = 'overview';
+    if (!['overview', 'daily', 'categories', 'banks', 'transactions', 'schedules'].includes(route)) route = 'overview';
     state.route = route;
     location.hash = route;
     $$('.rail__item').forEach(t => t.setAttribute('aria-selected', t.dataset.route === route ? 'true' : 'false'));
@@ -255,6 +257,7 @@
     if (route === 'categories' && !state.category) selectCategory(state.data.categoryTotals[0].category);
     if (route === 'banks' && !state.bank) selectBank(state.data.bankTotals[0].bank);
     if (route === 'transactions') renderTxnTable();
+    if (route === 'schedules' && !state.schedule) selectSchedule(SCHEDULES[0].key);
     window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
   }
 
@@ -486,6 +489,134 @@
     $('#pagerNext').disabled = state.txn.page >= pages;
   }
 
+  /* ---------- Schedules ---------- */
+  const SCHEDULES = [
+    { key: 'conso',         label: 'Consolidated' },
+    { key: 'fundPlan',      label: 'Fund Plan' },
+    { key: 'finalSheet',    label: 'Final Sheet' },
+    { key: 'esafDetail',    label: 'ESAF Detail' },
+    { key: 'advCommission', label: 'Adv Commission' },
+    { key: 'planSummary',   label: 'Plan Summary' }
+  ];
+
+  const isEmptyCell = (v) => v === null || v === undefined || (typeof v === 'string' && v.trim() === '');
+  const nonEmptyCount = (row) => Array.isArray(row) ? row.filter(c => !isEmptyCell(c)).length : 0;
+  const isExcelDate = (v) => typeof v === 'number' && v >= 40000 && v <= 60000 && Number.isFinite(v);
+  const excelToDate = (v) => {
+    const ms = Math.round((v - 25569) * 86400 * 1000);
+    const d = new Date(ms);
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' });
+  };
+  const fmtCell = (v) => {
+    if (isEmptyCell(v)) return '';
+    if (typeof v === 'number') {
+      if (isExcelDate(v)) return excelToDate(v);
+      if (Math.abs(v) >= 1000) return v.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+      if (!Number.isInteger(v)) return v.toFixed(2);
+      return String(v);
+    }
+    return String(v);
+  };
+  const isNumericCell = (v) => typeof v === 'number' && !isExcelDate(v);
+
+  function setupSchedules() {
+    const d = state.data;
+    const list = $('#schedList');
+    if (!list) return;
+    list.innerHTML = SCHEDULES.map((s, i) => {
+      const arr = d[s.key];
+      const rows = Array.isArray(arr) ? arr.filter(r => nonEmptyCount(r) > 0).length : 0;
+      return `<button class="sidelist__item" role="option" data-key="${s.key}" aria-selected="false">
+        <span class="sidelist__name">${esc(s.label)}</span>
+        <span class="sidelist__amt">${rows}</span>
+        <span class="sidelist__meta">${String(i + 1).padStart(2, '0')} · ${rows} rows</span>
+      </button>`;
+    }).join('');
+    list.addEventListener('click', (e) => {
+      const b = e.target.closest('.sidelist__item'); if (b) selectSchedule(b.dataset.key);
+    });
+  }
+
+  function selectSchedule(key) {
+    state.schedule = key;
+    $$('#schedList .sidelist__item').forEach(i => i.setAttribute('aria-selected', i.dataset.key === key ? 'true' : 'false'));
+    const meta = SCHEDULES.find(s => s.key === key);
+    const idx = SCHEDULES.findIndex(s => s.key === key);
+    const arr = state.data[key] || [];
+    const nonEmpty = arr.filter(r => nonEmptyCount(r) > 0);
+    $('#schedIdx').textContent = String(idx + 1).padStart(2, '0') + ' · Sheet';
+    $('#schedTitle').textContent = meta ? meta.label : key;
+    $('#schedMeta').innerHTML = `<strong style="color:var(--text)">${nonEmpty.length}</strong> rows`;
+    renderScheduleTable(arr);
+  }
+
+  function renderScheduleTable(arr) {
+    const thead = document.querySelector('#schedTable thead tr');
+    const tbody = document.querySelector('#schedTable tbody');
+    if (!thead || !tbody) return;
+
+    if (!Array.isArray(arr) || arr.length === 0) {
+      thead.innerHTML = '';
+      tbody.innerHTML = `<tr><td><div class="empty"><strong>Empty sheet</strong>No data to display.</div></td></tr>`;
+      return;
+    }
+
+    const rows = arr.filter(r => Array.isArray(r) && nonEmptyCount(r) > 0);
+    if (!rows.length) {
+      thead.innerHTML = '';
+      tbody.innerHTML = `<tr><td><div class="empty"><strong>Empty sheet</strong>No data to display.</div></td></tr>`;
+      return;
+    }
+
+    // Determine column bounds: trim leading/trailing columns that are entirely empty across all rows.
+    const maxLen = rows.reduce((m, r) => Math.max(m, r.length), 0);
+    let colStart = 0;
+    while (colStart < maxLen && rows.every(r => isEmptyCell(r[colStart]))) colStart++;
+    let colEnd = maxLen - 1;
+    while (colEnd > colStart && rows.every(r => isEmptyCell(r[colEnd]))) colEnd--;
+    const colCount = Math.max(1, colEnd - colStart + 1);
+
+    // Find header: first row with ≥2 non-empty cells.
+    let headerIdx = rows.findIndex(r => nonEmptyCount(r) >= 2);
+    if (headerIdx < 0) headerIdx = 0;
+    const headerRow = rows[headerIdx];
+
+    // Build header cells; detect numeric columns by sampling body cells.
+    const bodyRows = rows.filter((_, i) => i !== headerIdx);
+    const numericCol = [];
+    for (let c = colStart; c <= colEnd; c++) {
+      let num = 0, nonEmpty = 0;
+      bodyRows.forEach(r => {
+        const v = r[c];
+        if (!isEmptyCell(v)) { nonEmpty++; if (isNumericCell(v)) num++; }
+      });
+      numericCol.push(nonEmpty > 0 && num / nonEmpty >= 0.6);
+    }
+
+    thead.innerHTML = Array.from({ length: colCount }, (_, i) => {
+      const c = colStart + i;
+      const v = headerRow ? headerRow[c] : '';
+      const cls = numericCol[i] ? ' class="num"' : '';
+      return `<th${cls}>${esc(fmtCell(v))}</th>`;
+    }).join('');
+
+    tbody.innerHTML = bodyRows.map(r => {
+      // Section subheader: single non-empty cell → full-width.
+      if (nonEmptyCount(r) === 1) {
+        const v = r.find(c => !isEmptyCell(c));
+        return `<tr class="sheet-subhead"><td colspan="${colCount}">${esc(fmtCell(v))}</td></tr>`;
+      }
+      const cells = [];
+      for (let i = 0; i < colCount; i++) {
+        const c = colStart + i;
+        const v = r[c];
+        const cls = numericCol[i] && isNumericCell(v) ? ' class="num mono"' : (numericCol[i] ? ' class="num"' : '');
+        cells.push(`<td${cls}>${esc(fmtCell(v))}</td>`);
+      }
+      return `<tr>${cells.join('')}</tr>`;
+    }).join('');
+  }
+
   /* ---------- Palette ---------- */
   function setupPalette() {
     $('#openSearch').addEventListener('click', openPalette);
@@ -593,7 +724,7 @@
       if (e.key === '?') { e.preventDefault(); $('#help').hidden = false; return; }
       if (e.key === 'g') { state.keyBuf = 'g'; setTimeout(() => { if (state.keyBuf === 'g') state.keyBuf = ''; }, 900); return; }
       if (state.keyBuf === 'g') {
-        const map = { o: 'overview', d: 'daily', c: 'categories', b: 'banks', t: 'transactions' };
+        const map = { o: 'overview', d: 'daily', c: 'categories', b: 'banks', t: 'transactions', s: 'schedules' };
         const r = map[e.key.toLowerCase()];
         if (r) { go(r); state.keyBuf = ''; e.preventDefault(); }
       }
