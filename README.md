@@ -1,107 +1,77 @@
-# March 2026 Accounts — CEO Dashboard
+# Accounts
 
-An executive dashboard summarising the company's March 2026 bank payment
-activity. The source is a 32-sheet Excel workbook (`sheet_full.xlsx`) covering
-the monthly overview and per-day transaction detail for 01–31 March. The
-workbook is parsed into structured JSON, surfaced through a static web
-dashboard, and optionally persisted in Supabase for richer querying.
+A single-month treasury ledger for an NBFC. Static site. No framework.
 
-## At a glance
+March 2026 — ₹ 88.95 Cr of outflow across 1,049 transactions, 37 bank accounts, 31 active days.
 
-| Metric | Value |
-| --- | --- |
-| Month | March 2026 |
-| Transactions | 1,049 |
-| Total payments | ₹88,95,35,348.36 (~₹88.95 Cr) |
-| Banks | 37 |
-| Days with activity | 31 / 31 |
-| Top category | BC (₹39.84 Cr, 44.8%) |
-| Top bank | ESAF Small Finance Bank (₹29.90 Cr) |
-| Uncategorized | 208 txns, ₹6.26 Cr (7.04%) — flagged for review |
+## Stack
 
-## Tech stack
+- Plain HTML/CSS/JS. Chart.js via CDN.
+- `data/march.json` — canonical dataset (source of truth).
+- `data/insights.json` — derived CEO insights (top-5, anomalies, concentration, weekly rhythm, uncategorized flag, extreme days).
+- Supabase-ready: set `window.SUPABASE_URL` + `window.SUPABASE_ANON_KEY` and the loader reads from REST views instead.
 
-- **Frontend:** HTML, CSS, vanilla JavaScript, Chart.js
-- **Data layer (optional):** Supabase (Postgres + REST + full-text search RPC)
-- **Hosting:** Vercel (static)
-- **Data pipeline:** Python 3 + openpyxl
+## Run
 
-## Repository layout
-
-```
-.
-├── index.html                  # dashboard entry point
-├── assets/                     # css, js, chart config
-├── data/
-│   ├── march.json              # full parsed dataset (source of truth for UI)
-│   ├── insights.json           # CEO-level findings (top txns, anomalies, etc.)
-│   ├── supabase_schema.sql     # transactions table + indexes
-│   ├── supabase_views.sql      # views + search_transactions RPC
-│   └── seed.sql                # 1,049 INSERT statements
-├── parse_data.py               # xlsx -> data/march.json, schema.sql, seed.sql
-├── generate_insights.py        # data/march.json -> data/insights.json
-├── sheet_full.xlsx             # source workbook (input, not committed if large)
-└── README.md
+```sh
+python3 -m http.server 8765
+# then open http://localhost:8765
 ```
 
-## Running locally
+`file://` will not work — the page fetches JSON, which requires an HTTP origin.
 
-```bash
-# open the dashboard
-open index.html
+## Structure
+
+```
+index.html
+assets/
+  css/style.css        design tokens, layout, table, calendar, palette
+  js/data-loader.js    march.json + insights.json loader (+ Supabase fallback)
+  js/charts.js         Chart.js — single emerald series, thin gridlines, no legends
+  js/app.js            routing, state, tables, filters, command palette, keyboard
+data/
+  march.json
+  insights.json
+  seed.sql             Supabase seed
+  supabase_schema.sql  Supabase views used when SUPABASE_URL is set
 ```
 
-No build step. `index.html` fetches `data/march.json` and
-`data/insights.json` directly.
+## Design
 
-## Regenerating data
+Editorial finance: Bloomberg Terminal × Financial Times × Linear.
 
-If the source workbook changes, re-run the pipeline:
+- Background `#0B0B0F` · surface `#14141A` · rule `#1D1D24` · strong rule `#2A2A32`.
+- Text `#EDEDEE` / muted `#8B8B94` / faint `#5A5A62`.
+- One signal color: emerald `#10B981`. Amber / rose only for caution and anomalies.
+- **Fraunces** (display & section titles, tabular-nums) paired with **Inter** (UI/body) and **JetBrains Mono** (labels, column headers, keys).
+- 240 px left rail navigation; 12-col stage; max width 1400 px.
+- Thin hairline dividers instead of stacked card chrome.
+- Tables: 44 px rows, 10 px uppercase mono column headers, sticky header, right-aligned numerics.
+- Calendar: 7×5 grid, day number in Fraunces, outflow sparkbar at cell bottom.
+- Hero number ₹88.95 Cr in 72 px Fraunces 300 weight, letter-spacing −.035em.
 
-```bash
-pip3 install openpyxl
-python3 parse_data.py          # rebuilds data/march.json, schema.sql, seed.sql
-python3 generate_insights.py   # rebuilds data/insights.json
+## Sections
+
+1. **Overview** — hero total, 5-column stat strip, daily outflow line, category ledger, bank concentration bar, ten largest transactions, insights (weekly rhythm, concentration gauges, extreme days, top-5, anomalies, day-over-day jumps, uncategorized action callout).
+2. **Daily** — 7×5 calendar, click a cell to drill into the day's transactions (filterable).
+3. **Categories** — left list, detail shows daily trend + transactions.
+4. **Banks** — left list, detail shows daily trend + transactions.
+5. **Transactions** — full-text search, bank / category / date-range / amount filters, sortable columns, 50 / page pagination.
+
+## Interactions
+
+- `⌘K` / `Ctrl-K` — global search across transactions, banks, categories.
+- `g o` Overview · `g d` Daily · `g c` Categories · `g b` Banks · `g t` Transactions.
+- `?` help overlay · `esc` closes overlays.
+
+## Data shape (march.json)
+
+```
+month, summary, categoryTotals[], bankTotals[],
+dailyTotals[{date, day, total, count, byCategory}],
+transactions[{id, date, day, bank, particulars, amount, category}]
 ```
 
-## Supabase setup
+## Supabase
 
-Run the SQL files in order via the Supabase SQL editor or `psql`:
-
-```bash
-psql "$SUPABASE_DB_URL" -f data/supabase_schema.sql
-psql "$SUPABASE_DB_URL" -f data/seed.sql
-psql "$SUPABASE_DB_URL" -f data/supabase_views.sql
-```
-
-This provisions:
-
-- `transactions` — primary table
-- `v_daily_summary`, `v_category_totals`, `v_bank_totals`, `v_uncategorized` — views
-- `search_transactions(query text)` — full-text search RPC over particulars
-
-## Deployment
-
-- **Vercel:** `https://<project>.vercel.app` (set after first deploy)
-- **Supabase project URL:** `https://<ref>.supabase.co`
-- **Supabase anon key:** stored in Vercel env as `SUPABASE_ANON_KEY`
-
-Environment variables expected by the frontend:
-
-| Variable | Purpose |
-| --- | --- |
-| `SUPABASE_URL` | Supabase project REST endpoint |
-| `SUPABASE_ANON_KEY` | Public anon key for read-only queries |
-
-## Data model
-
-Each transaction row contains: `id`, `txn_date`, `day`, `bank`, `particulars`,
-`amount`, `category`. Categories are assigned by matching the first non-zero
-category column in the source sheet (Fund Transfer, BC, Bank Repayment, Bank
-charges, Admin Dept, HR Dept, IT Dept, Accounts, Finance Payments, MIS,
-FLDG-ESAF, Short Term FD, Unplanned Payments); rows with an amount but no
-category flag are tagged `Uncategorized`.
-
-## Credits
-
-Prepared for the CEO review cycle — March 2026 close.
+Views expected: `march_summary`, `march_category_totals`, `march_bank_totals`, `march_daily_totals`, `march_transactions`. See `data/supabase_schema.sql`.
