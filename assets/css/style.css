@@ -252,6 +252,8 @@ body {
   border-top: 1px solid var(--border);
 }
 .ledger tr.sheet-subhead:hover td { background: #FAFAF8; }
+.ledger tr.sheet-total td { font-weight: 500; color: var(--text); background: #FBFBF9; }
+.ledger tr.sheet-total:hover td { background: #F5F5F1; }
 
 .pill {
   display: inline-flex; align-items: center;

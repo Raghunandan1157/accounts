@@ -519,17 +519,48 @@
   };
   const isNumericCell = (v) => typeof v === 'number' && !isExcelDate(v);
 
+  function schedSheet(key) {
+    const s = state.data.schedules && state.data.schedules[key];
+    if (s && Array.isArray(s.columns) && Array.isArray(s.rows)) return s;
+    // Fallback: raw rows-array from march.json, synthesised into the same shape.
+    const arr = state.data[key];
+    if (!Array.isArray(arr)) return null;
+    const rows = arr.filter(r => Array.isArray(r) && nonEmptyCount(r) > 0);
+    if (!rows.length) return { label: key, columns: [], rows: [] };
+    const maxLen = rows.reduce((m, r) => Math.max(m, r.length), 0);
+    let a = 0; while (a < maxLen && rows.every(r => isEmptyCell(r[a]))) a++;
+    let b = maxLen - 1; while (b > a && rows.every(r => isEmptyCell(r[b]))) b--;
+    let headerIdx = rows.findIndex(r => nonEmptyCount(r) >= 2); if (headerIdx < 0) headerIdx = 0;
+    const hdr = rows[headerIdx] || [];
+    const body = rows.filter((_, i) => i !== headerIdx);
+    const columns = [];
+    for (let c = a; c <= b; c++) {
+      let num = 0, nonEmpty = 0;
+      body.forEach(r => { const v = r[c]; if (!isEmptyCell(v)) { nonEmpty++; if (isNumericCell(v)) num++; } });
+      const isNumeric = nonEmpty > 0 && num / nonEmpty >= 0.6;
+      columns.push({ key: 'c' + c, label: fmtCell(hdr[c]) || '', align: isNumeric ? 'right' : 'left', isNumeric, isDate: false });
+    }
+    const rowsOut = body.map(r => {
+      if (nonEmptyCount(r) === 1) {
+        return { _type: 'section', label: fmtCell(r.find(c => !isEmptyCell(c))) };
+      }
+      const o = { _type: 'data' };
+      for (let c = a; c <= b; c++) o['c' + c] = r[c];
+      return o;
+    });
+    return { label: key, columns, rows: rowsOut };
+  }
+
   function setupSchedules() {
-    const d = state.data;
     const list = $('#schedList');
     if (!list) return;
     list.innerHTML = SCHEDULES.map((s, i) => {
-      const arr = d[s.key];
-      const rows = Array.isArray(arr) ? arr.filter(r => nonEmptyCount(r) > 0).length : 0;
+      const sheet = schedSheet(s.key);
+      const rc = sheet ? sheet.rows.length : 0;
       return `<button class="sidelist__item" role="option" data-key="${s.key}" aria-selected="false">
-        <span class="sidelist__name">${esc(s.label)}</span>
-        <span class="sidelist__amt">${rows}</span>
-        <span class="sidelist__meta">${String(i + 1).padStart(2, '0')} · ${rows} rows</span>
+        <span class="sidelist__name">${esc(sheet?.label || s.label)}</span>
+        <span class="sidelist__amt">${rc}</span>
+        <span class="sidelist__meta">${String(i + 1).padStart(2, '0')} · ${rc} rows</span>
       </button>`;
     }).join('');
     list.addEventListener('click', (e) => {
@@ -540,80 +571,47 @@
   function selectSchedule(key) {
     state.schedule = key;
     $$('#schedList .sidelist__item').forEach(i => i.setAttribute('aria-selected', i.dataset.key === key ? 'true' : 'false'));
-    const meta = SCHEDULES.find(s => s.key === key);
+    const sheet = schedSheet(key);
     const idx = SCHEDULES.findIndex(s => s.key === key);
-    const arr = state.data[key] || [];
-    const nonEmpty = arr.filter(r => nonEmptyCount(r) > 0);
+    const label = sheet?.label || SCHEDULES[idx]?.label || key;
     $('#schedIdx').textContent = String(idx + 1).padStart(2, '0') + ' · Sheet';
-    $('#schedTitle').textContent = meta ? meta.label : key;
-    $('#schedMeta').innerHTML = `<strong style="color:var(--text)">${nonEmpty.length}</strong> rows`;
-    renderScheduleTable(arr);
+    $('#schedTitle').textContent = label;
+    $('#schedMeta').innerHTML = `<strong style="color:var(--text)">${sheet ? sheet.rows.length : 0}</strong> rows`;
+    renderScheduleTable(sheet);
   }
 
-  function renderScheduleTable(arr) {
+  function renderScheduleTable(sheet) {
     const thead = document.querySelector('#schedTable thead tr');
     const tbody = document.querySelector('#schedTable tbody');
     if (!thead || !tbody) return;
 
-    if (!Array.isArray(arr) || arr.length === 0) {
+    if (!sheet || !sheet.columns.length || !sheet.rows.length) {
       thead.innerHTML = '';
       tbody.innerHTML = `<tr><td><div class="empty"><strong>Empty sheet</strong>No data to display.</div></td></tr>`;
       return;
     }
 
-    const rows = arr.filter(r => Array.isArray(r) && nonEmptyCount(r) > 0);
-    if (!rows.length) {
-      thead.innerHTML = '';
-      tbody.innerHTML = `<tr><td><div class="empty"><strong>Empty sheet</strong>No data to display.</div></td></tr>`;
-      return;
-    }
+    const cols = sheet.columns;
+    const colCount = cols.length;
 
-    // Determine column bounds: trim leading/trailing columns that are entirely empty across all rows.
-    const maxLen = rows.reduce((m, r) => Math.max(m, r.length), 0);
-    let colStart = 0;
-    while (colStart < maxLen && rows.every(r => isEmptyCell(r[colStart]))) colStart++;
-    let colEnd = maxLen - 1;
-    while (colEnd > colStart && rows.every(r => isEmptyCell(r[colEnd]))) colEnd--;
-    const colCount = Math.max(1, colEnd - colStart + 1);
-
-    // Find header: first row with ≥2 non-empty cells.
-    let headerIdx = rows.findIndex(r => nonEmptyCount(r) >= 2);
-    if (headerIdx < 0) headerIdx = 0;
-    const headerRow = rows[headerIdx];
-
-    // Build header cells; detect numeric columns by sampling body cells.
-    const bodyRows = rows.filter((_, i) => i !== headerIdx);
-    const numericCol = [];
-    for (let c = colStart; c <= colEnd; c++) {
-      let num = 0, nonEmpty = 0;
-      bodyRows.forEach(r => {
-        const v = r[c];
-        if (!isEmptyCell(v)) { nonEmpty++; if (isNumericCell(v)) num++; }
-      });
-      numericCol.push(nonEmpty > 0 && num / nonEmpty >= 0.6);
-    }
-
-    thead.innerHTML = Array.from({ length: colCount }, (_, i) => {
-      const c = colStart + i;
-      const v = headerRow ? headerRow[c] : '';
-      const cls = numericCol[i] ? ' class="num"' : '';
-      return `<th${cls}>${esc(fmtCell(v))}</th>`;
+    thead.innerHTML = cols.map(c => {
+      const cls = c.align === 'right' ? ' class="num"' : '';
+      return `<th${cls}>${esc(c.label || '')}</th>`;
     }).join('');
 
-    tbody.innerHTML = bodyRows.map(r => {
-      // Section subheader: single non-empty cell → full-width.
-      if (nonEmptyCount(r) === 1) {
-        const v = r.find(c => !isEmptyCell(c));
-        return `<tr class="sheet-subhead"><td colspan="${colCount}">${esc(fmtCell(v))}</td></tr>`;
+    tbody.innerHTML = sheet.rows.map(r => {
+      if (r._type === 'section') {
+        return `<tr class="sheet-subhead"><td colspan="${colCount}">${esc(r.label || '')}</td></tr>`;
       }
-      const cells = [];
-      for (let i = 0; i < colCount; i++) {
-        const c = colStart + i;
-        const v = r[c];
-        const cls = numericCol[i] && isNumericCell(v) ? ' class="num mono"' : (numericCol[i] ? ' class="num"' : '');
-        cells.push(`<td${cls}>${esc(fmtCell(v))}</td>`);
-      }
-      return `<tr>${cells.join('')}</tr>`;
+      const rowCls = r._type === 'total' ? ' class="sheet-total"' : '';
+      const cells = cols.map(c => {
+        const v = r[c.key];
+        const right = c.align === 'right';
+        const isNum = right && typeof v === 'number';
+        const cls = isNum ? ' class="num mono"' : (right ? ' class="num"' : '');
+        return `<td${cls}>${esc(fmtCell(v))}</td>`;
+      }).join('');
+      return `<tr${rowCls}>${cells}</tr>`;
     }).join('');
   }
 

@@ -12,6 +12,10 @@
         const r = await fetch('data/insights.json', { cache: 'no-cache' });
         if (r.ok) core.insights = await r.json();
       } catch (_) { /* insights are optional */ }
+      try {
+        const r = await fetch('data/schedules.json', { cache: 'no-cache' });
+        if (r.ok) core.schedules = await r.json();
+      } catch (_) { /* schedules are optional */ }
       return core;
     },
 
