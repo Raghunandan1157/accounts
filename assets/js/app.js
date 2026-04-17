@@ -340,7 +340,7 @@
     $('#catMeta').innerHTML = `<strong style="color:var(--text)">${fmtINR(t?.amount || 0)}</strong> · ${t?.count || 0} transactions`;
     const labels = state.data.dailyTotals.map(d => d.day);
     const values = state.data.dailyTotals.map(d => (d.byCategory && d.byCategory[cat]) || 0);
-    window.Charts.trend($('#chartCatTrend'), labels, values, 'catTrend');
+    window.Charts.trend($('#chartCatTrend'), labels, values, 'catTrend', { seriesLabel: cat });
     renderCategoryTable();
   }
 
@@ -384,7 +384,7 @@
     state.data.transactions.forEach(x => { if (x.bank === bank) byDay[x.date] = (byDay[x.date] || 0) + x.amount; });
     const labels = state.data.dailyTotals.map(d => d.day);
     const values = state.data.dailyTotals.map(d => byDay[d.date] || 0);
-    window.Charts.trend($('#chartBankTrend'), labels, values, 'bankTrend');
+    window.Charts.trend($('#chartBankTrend'), labels, values, 'bankTrend', { seriesLabel: bank });
     renderBankTable();
   }
 
