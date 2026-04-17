@@ -76,10 +76,9 @@
       { l: 'Largest category', v: topCat.category, sub: fmtCompact(topCat.amount) + ' · ' + topCat.count + ' txns' },
       { l: 'Primary bank',     v: truncate(topBank.bank, 22), sub: fmtCompact(topBank.amount) },
       { l: 'Avg ticket',       v: fmtCompact(s.totalPayments / s.transactionCount), sub: 'per transaction' },
-      { l: 'Busiest day',      v: busiestDay(d), sub: 'by outflow' },
-      { l: 'Uncategorized',    v: uncat.count + ' txns', sub: fmtCompact(uncat.amount) + ' flagged' }
+      { l: 'Busiest day',      v: busiestDay(d), sub: 'by outflow' }
     ].map(k =>
-      `<div class="stat">
+      `<div class="stat" role="listitem">
         <div class="stat__label">${esc(k.l)}</div>
         <div class="stat__value">${esc(k.v)}</div>
         <div class="stat__sub">${esc(k.sub)}</div>
@@ -96,6 +95,10 @@
     // Charts
     window.Charts.daily($('#chartDaily'), d.dailyTotals);
     window.Charts.banks($('#chartBanks'), d.bankTotals, 10);
+    const sparkEl = $('#chartSpark');
+    if (sparkEl && window.Charts.spark) window.Charts.spark(sparkEl, d.dailyTotals);
+    const cm = $('#catLedgerMeta');
+    if (cm) cm.textContent = d.categoryTotals.length + ' categories';
 
     // Top 10
     const top = [...d.transactions].sort((a, b) => b.amount - a.amount).slice(0, 10);
@@ -566,7 +569,7 @@
     if (!row) return;
     row.scrollIntoView({ block: 'center', behavior: 'smooth' });
     row.style.transition = 'background-color 600ms ease';
-    row.style.backgroundColor = 'rgba(16,185,129,0.14)';
+    row.style.backgroundColor = 'rgba(79,70,229,0.12)';
     setTimeout(() => row.style.backgroundColor = '', 1400);
   }
 

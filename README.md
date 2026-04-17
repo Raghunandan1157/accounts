@@ -38,17 +38,18 @@ data/
 
 ## Design
 
-Editorial finance: Bloomberg Terminal × Financial Times × Linear.
+Light premium SaaS: Linear × Vercel × Stripe × Notion.
 
-- Background `#0B0B0F` · surface `#14141A` · rule `#1D1D24` · strong rule `#2A2A32`.
-- Text `#EDEDEE` / muted `#8B8B94` / faint `#5A5A62`.
-- One signal color: emerald `#10B981`. Amber / rose only for caution and anomalies.
-- **Fraunces** (display & section titles, tabular-nums) paired with **Inter** (UI/body) and **JetBrains Mono** (labels, column headers, keys).
-- 240 px left rail navigation; 12-col stage; max width 1400 px.
-- Thin hairline dividers instead of stacked card chrome.
-- Tables: 44 px rows, 10 px uppercase mono column headers, sticky header, right-aligned numerics.
-- Calendar: 7×5 grid, day number in Fraunces, outflow sparkbar at cell bottom.
-- Hero number ₹88.95 Cr in 72 px Fraunces 300 weight, letter-spacing −.035em.
+- Canvas `#FAFAF8` (warm off-white) · surface `#FFFFFF` · border `#E7E7E4`.
+- Text `#0A0A0A` / secondary `#1F1F20` / muted `#6B6B70` / faint `#9A9AA0`.
+- One accent: indigo `#4F46E5` (`#EEF0FE` weak, `#3730A3` ink). Green `#059669` for positive deltas; amber `#B45309` for caution.
+- **Geist** (display + body) paired with **Geist Mono** (numbers, labels, column headers, keys). Tabular-nums throughout.
+- Sticky top navigation (56 px, blurred); 1200 px max stage; 56 px top padding.
+- 1 px `#E7E7E4` borders, 10 px radius. No gradients, glows, or glassmorphism; only a subtle popover shadow on overlays.
+- Tables: 13 px rows, 10.5 px uppercase mono column headers, sticky header, right-aligned numerics.
+- Calendar: 7×5 grid, day number in Geist 500, indigo bottom-bar scaled to outflow.
+- Hero number ₹88.95 Cr in 72 px Geist 500, letter-spacing −.035em, tabular-nums.
+- Motion: 180 ms `cubic-bezier(0.16,1,0.3,1)`, 8 px fade-up on page load. Micro-interactions only; ⌘K opens without animation.
 
 ## Sections
 
